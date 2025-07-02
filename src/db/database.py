@@ -1,5 +1,4 @@
 from typing import cast
-from fastapi import Request
 from dotenv import load_dotenv
 
 import os
@@ -7,6 +6,7 @@ import psycopg
 import logging
 
 log = logging.getLogger(__name__)
+
 
 class Database:
     def __init__(self):
@@ -21,15 +21,16 @@ class Database:
             load_dotenv()
 
             conn = psycopg.connect(
-                host = os.getenv("DB_HOST"),
-                dbname = os.getenv("DB_NAME"),
-                user = os.getenv("DB_USER"),
-                password = os.getenv("DB_PASS"),
-                port = os.getenv("DB_PORT")
+                host=os.getenv("DB_HOST"),
+                dbname=os.getenv("DB_NAME"),
+                user=os.getenv("DB_USER"),
+                password=os.getenv("DB_PASS"),
+                port=os.getenv("DB_PORT")
             )
+            return conn
+
         except psycopg.OperationalError as e:
             log.error(f"Could not connect to Database: {e}")
 
-        return conn
-    
+
 db = Database()
