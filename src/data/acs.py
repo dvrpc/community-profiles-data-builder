@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from .consts import ACS_VARIABLES, ACS_VARIABLES_FORMATTED, PA_FIPS, PA_FIPS_FORMATTED, NJ_FIPS, NJ_FIPS_FORMATTED, STATE_FIPS
+from .consts import ACS_VARIABLES, GROUPED_ACS_VARIABLES, PA_FIPS, PA_FIPS_FORMATTED, NJ_FIPS, NJ_FIPS_FORMATTED, STATE_FIPS
 import requests
 import os
 import logging
@@ -52,6 +52,7 @@ def get_county_data():
 
     def fetch_data(county_codes, state_code):
         url = f"https://api.census.gov/data/2023/acs/acs5?get={ACS_VARIABLES_FORMATTED}&for=county:{county_codes}&in=state:{state_code}&key={API_KEY}"
+        print(url)
         try:
             r = requests.get(url)
             r.raise_for_status()
@@ -61,6 +62,7 @@ def get_county_data():
 
         return r.json()
 
+    w
     pa_data = fetch_data(PA_FIPS_FORMATTED, 42)
     nj_data = fetch_data(NJ_FIPS_FORMATTED, 34)
     combined_data = pa_data[1:] + nj_data[1:]
