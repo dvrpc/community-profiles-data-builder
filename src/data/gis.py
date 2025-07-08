@@ -55,3 +55,9 @@ Returns total miles of freight highway within geometry
 '''
 def get_freight_highway_miles(geoid: int):
     pass 
+
+
+# SELECT co_name, SUM(ST_Length(ST_Intersection(boundaries.countyboundaries.shape ,transportation.all_trails.shape))) * 0.000621371
+# FROM boundaries.countyboundaries
+# JOIN transportation.all_trails ON ST_Intersects(boundaries.countyboundaries.shape, transportation.all_trails.shape)
+# GROUP BY co_name ;
