@@ -3,7 +3,7 @@ from .data import acs
 
 def exec():
     build_county_data()
-    # build_muni_data()
+    build_muni_data()
     pass
 
 
