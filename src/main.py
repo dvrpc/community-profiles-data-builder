@@ -1,18 +1,19 @@
-from .data import acs
+from .data import acs, gis
 
 
 def exec():
     build_county_data()
-    build_muni_data()
+    # build_muni_data()
     pass
 
 
 def build_county_data():
     # Fetch ACS data
-    acs_data = acs.get_county_data()
-    print(acs_data)
+    # acs_data = acs.get_county_data()
+    # print(acs_data)
     # Fetch GIS data
-
+    gis_data = gis.get_county_layers()
+    print(gis_data)
     # Fetch CKAN data
 
     # Construct table

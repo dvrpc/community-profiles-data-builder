@@ -1,36 +1,16 @@
-from typing import cast
 from dotenv import load_dotenv
-
-import os
-import psycopg
+from sqlalchemy import create_engine
 import logging
+import os
+
+host = os.getenv("DB_HOST")
+dbname = os.getenv("DB_NAME")
+user = os.getenv("DB_USER")
+password = os.getenv("DB_PASS")
+port = os.getenv("DB_PORT")
 
 log = logging.getLogger(__name__)
+load_dotenv()
 
-
-class Database:
-    def __init__(self):
-        self.conn = self.connect()
-
-    def connect(self):
-        """
-        Connect to database and return connection
-        """
-        log.info("Connecting to PostgreSQL Database...")
-        try:
-            load_dotenv()
-
-            conn = psycopg.connect(
-                host=os.getenv("DB_HOST"),
-                dbname=os.getenv("DB_NAME"),
-                user=os.getenv("DB_USER"),
-                password=os.getenv("DB_PASS"),
-                port=os.getenv("DB_PORT")
-            )
-            return conn
-
-        except psycopg.OperationalError as e:
-            log.error(f"Could not connect to Database: {e}")
-
-
-db = Database()
+def get_engine():
+    return create_engine(f"postgresql://{user}:{password}@{host}:{port}/{dbname}")

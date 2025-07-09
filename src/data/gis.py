@@ -1,63 +1,24 @@
-from db.database import db
+from ..db.database import get_engine
 import logging
-import psycopg
+import os
+import pandas as pd
+from sqlalchemy.exc import OperationalError, ProgrammingError
 
+dirname = os.path.dirname(__file__)
 log = logging.getLogger(__name__)
 
-def fetch_sql(query):
-    cur = db.conn.cursor()
-    
-    response = None
+def fetch_sql(file):
+    engine = get_engine()
+    file_path = os.path.join(dirname, f'sql/{file}.sql')
+
     try:   
-        cur.execute(query)
-        response = cur.fetchall()
-    except psycopg.OperationalError as err:
-        log.error(f"Connection exception executing: \n{query} \n{err}")
-    except psycopg.Error as err:
-        log.error(f"Other psycopg error executing: \n{query} \n{err}")
-    except Exception as err:
-        log.error(f"Error executing query: \n{query} \n{err}")
-    
-    return response
-
-'''
-Returns total miles of current and planned trails within geometry
-- trail_miles
-- trail_miles_planned
-'''
-def get_trail_miles(geoid: int):
-    pass
-
-'''
-Returns total square miles of open space within geometry
-- open_space_sq_miles
-'''
-def get_open_space_sq_miles(geoid: int):
-    pass
-
-'''
-Returns total number of freight centers within geometry
-- freight_centers
-'''
-def get_freight_centers(geoid: int):
-    pass
-
-'''
-Returns total miles of freight rail within geometry
-- freight_rail_miles
-'''
-def get_freight_rail_miles(geoid: int):
-    pass
-
-'''
-Returns total miles of freight highway within geometry
-- freight_highway_miles
-'''
-def get_freight_highway_miles(geoid: int):
-    pass 
+        df = pd.read_sql_query(open(file_path, "r").read(), engine)
+        return df
+    except (OperationalError, ProgrammingError) as err:
+        log.error(f"Error executing: \n{file}.sql: \n{err}")
 
 
-# SELECT co_name, SUM(ST_Length(ST_Intersection(boundaries.countyboundaries.shape ,transportation.all_trails.shape))) * 0.000621371
-# FROM boundaries.countyboundaries
-# JOIN transportation.all_trails ON ST_Intersects(boundaries.countyboundaries.shape, transportation.all_trails.shape)
-# GROUP BY co_name ;
+def get_county_layers():
+    print(fetch_sql("county"))
+
+
