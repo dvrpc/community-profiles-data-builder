@@ -7,11 +7,12 @@ from sqlalchemy.exc import OperationalError, ProgrammingError
 dirname = os.path.dirname(__file__)
 log = logging.getLogger(__name__)
 
+
 def fetch_sql(file):
     engine = get_engine()
     file_path = os.path.join(dirname, f'sql/{file}.sql')
 
-    try:   
+    try:
         df = pd.read_sql_query(open(file_path, "r").read(), engine)
         return df
     except (OperationalError, ProgrammingError) as err:
@@ -19,6 +20,8 @@ def fetch_sql(file):
 
 
 def get_county_layers():
-    print(fetch_sql("county"))
+    county = fetch_sql("county")
+    county_spatial = fetch_sql("county_spatial")
 
-
+    county = county.merge(county_spatial, on='fips')
+    print(county)
