@@ -2,15 +2,16 @@ from ..db.database import get_engine
 import logging
 import os
 import pandas as pd
+import functools as ft
 from sqlalchemy.exc import OperationalError, ProgrammingError
 
 dirname = os.path.dirname(__file__)
 log = logging.getLogger(__name__)
 
 
-def fetch_sql(file):
+def fetch_sql(file, geo):
     engine = get_engine()
-    file_path = os.path.join(dirname, f'sql/{file}.sql')
+    file_path = os.path.join(dirname, f'sql/{geo}/{file}.sql')
 
     try:
         df = pd.read_sql_query(open(file_path, "r").read(), engine)
@@ -20,8 +21,11 @@ def fetch_sql(file):
 
 
 def get_county_layers():
-    county = fetch_sql("county")
-    county_spatial = fetch_sql("county_spatial")
+    spatial = fetch_sql("spatial", "county")
+    pop_emp_forecasts = fetch_sql("pop_emp_forecasts", "county")
+    land_use = fetch_sql("land_use", "county")
 
-    county = county.merge(county_spatial, on='fips')
-    print(county)
+    dfs = [spatial, pop_emp_forecasts, land_use]
+    county_merged = ft.reduce(lambda left, right: pd.merge(
+        left, right, on='fips'), dfs)
+    print(county_merged)
