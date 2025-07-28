@@ -23,11 +23,13 @@ def fetch_data(variable_group, county_codes, state_code, geo, is_subject):
     try:
         r = requests.get(url)
         r.raise_for_status()
+        
     except requests.exceptions.HTTPError as e:
         log.error(
             f"Failed to fetch ACS {geo} data for {state_code}: {county_codes}: {e.response.text}")
-
+        
     return r.json()
+
 
 def get_mapped_columns(columns):
     output_columns = []

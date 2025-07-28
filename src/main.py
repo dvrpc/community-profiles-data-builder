@@ -1,4 +1,4 @@
-from .data import acs, gis
+from .data import acs, gis, ckan
 
 
 def exec():
@@ -12,10 +12,11 @@ def build_county_data():
     # acs_data = acs.get_county_data()
     # print(acs_data)
     # Fetch GIS data
-    gis_data = gis.get_county_layers()
-    print(gis_data)
+    # gis_data = gis.get_county_layers()
+    # print(gis_data)
     # Fetch CKAN data
-
+    ckan_data = ckan.get_county_data()
+    print(ckan_data)
     # Construct table
 
     # Save to db

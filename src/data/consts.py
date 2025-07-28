@@ -9,6 +9,7 @@ ACS_VARIABLES = {
     "B26108_010E": "65_pop",  # Population 65 years and over
 
     # ---- Race
+    "B03002_002E": "not_hispanic_or_latino_pop", # Not hispanic or latino
     "B03002_003E": "white_alone_pop",  # White alone population
     "B03002_004E": "black_alone_pop",  # Black or African American alone pop
     "B03002_005E": "am_indian_alone_pop",  # American Indian and Alaska Native alone
@@ -16,18 +17,7 @@ ACS_VARIABLES = {
     # Native Hawaiian and Other Pacific Islander alone
     "B03002_007E": "haw_pac_alone_pop",
     "B03002_008E": "other_alone_pop",  # Some other race alone
-    # White alone or in Combination With One or More Other Races
-    "B02008_001E": "white_alone_pop",
-    # Black or African American alone or in Combination With One or More Other Races
-    "B02009_001E": "black_alone_pop",
-    # American Indian and Alaska Native alone or in Combination With One or More Other Races
-    "B02010_001E": "am_indian_alone_pop",
-    # Asian alone or in Combination With One or More Other Races
-    "B02011_001E": "asian_alone_pop",
-    # Native Hawaiian and Other Pacific Islander alone or in Combination With One or More Other Races
-    "B02012_001E": "haw_pac_alone_pop",
-    # Some other race alone or in Combination With One or More Other Races
-    "B02013_001E": "other_alone_pop",
+    "B03002_012E": "hispanic_or_latino_pop", # Hispanic or Latino of any race
 
     # ECONOMIC
     # ---- Economic Summary
@@ -346,3 +336,4 @@ STATE_FIPS = {
     "34": "New Jersey",
     "42": "Pennsylvania"
 }
+
