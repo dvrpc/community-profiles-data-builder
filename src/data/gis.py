@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 
 def fetch_sql(file, geo):
     engine = get_engine()
-    file_path = os.path.join(dirname, f'sql/{geo}/{file}.sql')
+    file_path = os.path.join(dirname, f'sql/gis/{geo}/{file}.sql')
 
     try:
         df = pd.read_sql_query(open(file_path, "r").read(), engine)

@@ -30,8 +30,9 @@ def fetch_datastore(file, geo):
 def get_county_data():
     pavement_conditions = fetch_datastore('pavement_conditions', 'county')
     bridge_conditions = fetch_datastore('bridge_conditions', 'county')
+    electric_vehicles = fetch_datastore('electric_vehicles', 'county')
 
-    dfs = [pavement_conditions, bridge_conditions]
+    dfs = [pavement_conditions, bridge_conditions, electric_vehicles]
     county_merged = ft.reduce(lambda left, right: pd.merge(
         left, right, on='fips'), dfs)
     return county_merged
