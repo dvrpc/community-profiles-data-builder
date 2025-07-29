@@ -63,35 +63,56 @@ SELECT
   --   WHERE ST_Area(ST_Intersection(c.shape, fc.shape)) > 0
   -- ), 0) AS unique_freight_centers,
 
-  COALESCE((
-    SELECT COUNT(*)
-    FROM transportation.patip_fy2025_2028_line tip
-    WHERE ST_Intersects(c.shape, tip.shape)
-  ), 0) AS fy25_pa_lines,
+  -- COALESCE((
+  --   SELECT COUNT(*)
+  --   FROM transportation.patip_fy2025_2028_line tip
+  --   WHERE ST_Intersects(c.shape, tip.shape)
+  -- ), 0) AS fy25_pa_lines,
 
-    COALESCE((
-    SELECT COUNT(*)
-    FROM transportation.njtip_fy2026_2029_line tip
-    WHERE ST_Intersects(c.shape, tip.shape)
-  ), 0) AS fy26_nj_lines,
+  --   COALESCE((
+  --   SELECT COUNT(*)
+  --   FROM transportation.njtip_fy2026_2029_line tip
+  --   WHERE ST_Intersects(c.shape, tip.shape)
+  -- ), 0) AS fy26_nj_lines,
 
-  COALESCE((
-    SELECT COUNT(*)
-    FROM transportation.patip_fy2025_2028_point tip
-    WHERE ST_Intersects(c.shape, tip.shape)
-  ), 0) AS fy25_pa_points,
+  -- COALESCE((
+  --   SELECT COUNT(*)
+  --   FROM transportation.patip_fy2025_2028_point tip
+  --   WHERE ST_Intersects(c.shape, tip.shape)
+  -- ), 0) AS fy25_pa_points,
 
   COALESCE((
     SELECT COUNT(*)
     FROM transportation.njtip_fy2026_2029_point tip
     WHERE ST_Intersects(c.shape, tip.shape)
-  ), 0) AS fy26_nj_points
+  ), 0) AS fy26_nj_points,
 
   -- COALESCE((
   --   SELECT (SUM(ST_Area(ST_Intersection(c.shape, os.shape))) / 1609.34)
   --   FROM planning.dvrpc_protectedopenspace os
   --   WHERE ST_Intersects(c.shape, os.shape)
   -- ), 0) AS protected_open_space_sq_mi
+
+  COALESCE((
+    SELECT COUNT(*)
+    FROM transportation.njtransit_transitstops njt
+    WHERE ST_Intersects(c.shape, njt.shape)
+  ), 0) AS bus_stops,
+
+  COALESCE((
+    SELECT COUNT(*)
+    FROM transportation.passengerrailstations prs
+    WHERE ST_Intersects(c.shape, prs.shape)
+  ), 0) AS passenger_rail_stations,
+
+  COALESCE((
+    SELECT (SUM(ST_Length(ST_Intersection(c.shape, pr.shape))) / 1609.34)
+    FROM transportation.passengerrail pr
+    WHERE ST_Intersects(c.shape, pr.shape)
+  ), 0) AS passenger_rail_mi
+
+
+
 FROM
   boundaries.countyboundaries c
 where c.dvrpc_reg = 'Yes';
