@@ -9,7 +9,7 @@ ACS_VARIABLES = {
     "B26108_010E": "65_pop",  # Population 65 years and over
 
     # ---- Race
-    "B03002_002E": "not_hispanic_or_latino_pop", # Not hispanic or latino
+    "B03002_002E": "not_hispanic_or_latino_pop",  # Not hispanic or latino
     "B03002_003E": "white_alone_pop",  # White alone population
     "B03002_004E": "black_alone_pop",  # Black or African American alone pop
     "B03002_005E": "am_indian_alone_pop",  # American Indian and Alaska Native alone
@@ -17,7 +17,7 @@ ACS_VARIABLES = {
     # Native Hawaiian and Other Pacific Islander alone
     "B03002_007E": "haw_pac_alone_pop",
     "B03002_008E": "other_alone_pop",  # Some other race alone
-    "B03002_012E": "hispanic_or_latino_pop", # Hispanic or Latino of any race
+    "B03002_012E": "hispanic_or_latino_pop",  # Hispanic or Latino of any race
 
     # ECONOMIC
     # ---- Economic Summary
@@ -300,8 +300,8 @@ ACS_SUBJECT_VARIABLES = {
 
     # ECONOMIC
     # ---- Economic Summary
-    "S1701_C01_002E": "under_18_pov_level",  # Under 18 below poverty level
-    "S1701_C01_010E": "over_65_pov_level",  # Over 65 below poverty level
+    "S1701_C02_002E": "under_18_pov_level",  # Under 18 below poverty level
+    "S1701_C02_010E": "over_65_pov_level",  # Over 65 below poverty level
     "S1901_C01_013E": "mean_hh_inc",  # mean household income
     "S1901_C02_013E": "mean_family_inc",  # mean family income
 
@@ -336,4 +336,3 @@ STATE_FIPS = {
     "34": "New Jersey",
     "42": "Pennsylvania"
 }
-
