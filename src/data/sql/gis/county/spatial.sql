@@ -1,6 +1,7 @@
 SELECT
   c.fips,
-  c.co_name,
+  c.co_name, 
+
 
   -- Miles of existing trails
 
@@ -81,11 +82,11 @@ SELECT
   --   WHERE ST_Intersects(c.shape, tip.shape)
   -- ), 0) AS fy25_pa_points,
 
-  COALESCE((
-    SELECT COUNT(*)
-    FROM transportation.njtip_fy2026_2029_point tip
-    WHERE ST_Intersects(c.shape, tip.shape)
-  ), 0) AS fy26_nj_points,
+  -- COALESCE((
+  --   SELECT COUNT(*)
+  --   FROM transportation.njtip_fy2026_2029_point tip
+  --   WHERE ST_Intersects(c.shape, tip.shape)
+  -- ), 0) AS fy26_nj_points,
 
   -- COALESCE((
   --   SELECT (SUM(ST_Area(ST_Intersection(c.shape, os.shape))) / 1609.34)
@@ -95,9 +96,27 @@ SELECT
 
   COALESCE((
     SELECT COUNT(*)
+    FROM transportation.septa_transitstops sp
+    WHERE ST_Intersects(c.shape, ST_transform(sp.shape, 26918))
+  ), 0) AS septa_bus_stops,
+
+  COALESCE((
+    SELECT (SUM(ST_Length(ST_Intersection(c.shape, ST_transform(sp.shape, 26918)))) / 1609.34)
+    FROM transportation.septa_transitroutes sp
+    WHERE ST_Intersects(c.shape, ST_transform(sp.shape, 26918))
+  ), 0) AS septa_bus_routes_mi,
+
+  COALESCE((
+    SELECT COUNT(*)
     FROM transportation.njtransit_transitstops njt
-    WHERE ST_Intersects(c.shape, njt.shape)
-  ), 0) AS bus_stops,
+    WHERE ST_Intersects(c.shape, ST_transform(njt.shape, 26918))
+  ), 0) AS njt_bus_stops,
+
+  COALESCE((
+    SELECT (SUM(ST_Length(ST_Intersection(c.shape, ST_transform(njt.shape, 26918)))) / 1609.34)
+    FROM transportation.njtransit_transitroutes njt
+    WHERE ST_Intersects(c.shape, ST_transform(njt.shape, 26918))
+  ), 0) AS njt_bus_routes_mi,
 
   COALESCE((
     SELECT COUNT(*)

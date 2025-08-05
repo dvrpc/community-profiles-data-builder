@@ -15,8 +15,8 @@ def build_county_data():
     gis_data = gis.get_county_layers()
     print(gis_data)
     # Fetch CKAN data
-    # ckan_data = ckan.get_county_data()
-    # print(ckan_data)
+    ckan_data = ckan.get_county_data()
+    print(ckan_data)
     # Construct table
 
     # Save to db
