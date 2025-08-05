@@ -39,6 +39,12 @@ SELECT
   --   WHERE ST_Intersects(c.shape, pn.shape)
   -- ), 0) AS pedestrian_network_mi,
 
+  COALESCE((
+    SELECT AVG(sw_ratio)
+    FROM pedestriannetwork_gaps pg
+    WHERE ST_Contains(c.shape, st_transform(pg.shape, 26918))
+  ), 0) AS sw_gap_ratio,
+
   -- -- Miles of freight rail
   
   -- COALESCE((
