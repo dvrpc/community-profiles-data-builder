@@ -1,4 +1,4 @@
-from ..db.database import get_engine
+from ..db.database import get_gis_engine
 import logging
 import os
 import pandas as pd
@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 
 
 def fetch_sql(file, geo):
-    engine = get_engine()
+    engine = get_gis_engine()
     file_path = os.path.join(dirname, f'sql/gis/{geo}/{file}.sql')
 
     try:
@@ -28,4 +28,4 @@ def get_county_layers():
     dfs = [spatial, pop_emp_forecasts, land_use]
     county_merged = ft.reduce(lambda left, right: pd.merge(
         left, right, on='fips'), dfs)
-    print(county_merged)
+    return county_merged

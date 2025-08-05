@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from .consts import ACS_VARIABLES, GROUPED_ACS_VARIABLES, PA_FIPS, PA_FIPS_FORMATTED, NJ_FIPS, NJ_FIPS_FORMATTED, STATE_FIPS, ALL_ACS_VARIABLES, ACS_SUBJECT_VARIABLE_KEYS
+from .consts import GROUPED_ACS_VARIABLES, PA_FIPS, PA_FIPS_FORMATTED, NJ_FIPS, NJ_FIPS_FORMATTED, STATE_FIPS, ACS_VARIABLES_COMBINED, ACS_SUBJECT_VARIABLE_KEYS
 import requests
 import os
 import logging
@@ -34,8 +34,8 @@ def fetch_data(variable_group, county_codes, state_code, geo, is_subject):
 def get_mapped_columns(columns):
     output_columns = []
     for field in columns:
-        if field in ALL_ACS_VARIABLES:
-            output_columns.append(ALL_ACS_VARIABLES[field])
+        if field in ACS_VARIABLES_COMBINED:
+            output_columns.append(ACS_VARIABLES_COMBINED[field])
         else:
             output_columns.append(field)
     return output_columns

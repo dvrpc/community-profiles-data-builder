@@ -1,4 +1,4 @@
-ACS_VARIABLES = {
+acs_variables = {
     # DEMOGRAPHICS
     # ---- Demographic Summary
     "B01003_001E": "total_pop",  # Total Population
@@ -273,11 +273,17 @@ ACS_VARIABLES = {
     "C16001_038E": "other_and_unspecified_languages_lim",
 }
 
-ACS_VARIABLE_KEYS = [*ACS_VARIABLES]
+all_acs_variables = {}
+
+for key, value in acs_variables.items():
+    all_acs_variables[key] = value
+    all_acs_variables[key[:-1] + 'M'] = value + '_moe'
+
+ACS_VARIABLE_KEYS = [*all_acs_variables]
 GROUPED_ACS_VARIABLES = [ACS_VARIABLE_KEYS[i:i + 49]
                          for i in range(0, len(ACS_VARIABLE_KEYS), 49)]
 
-ACS_SUBJECT_VARIABLES = {
+acs_subject_variables = {
     # ---- Age
     "S0101_C01_002E": "under_5_pop",  # Under 5 years
     "S0101_C01_003E": "5_to_9_pop",  # 5 to 9 years
@@ -311,9 +317,15 @@ ACS_SUBJECT_VARIABLES = {
 
 }
 
-ACS_SUBJECT_VARIABLE_KEYS = [*ACS_SUBJECT_VARIABLES]
+all_acs_subject_variables = {}
 
-ALL_ACS_VARIABLES = ACS_VARIABLES | ACS_SUBJECT_VARIABLES
+for key, value in acs_subject_variables.items():
+    all_acs_subject_variables[key] = value
+    all_acs_subject_variables[key[:-1] + 'M'] = value + '_moe'
+
+ACS_SUBJECT_VARIABLE_KEYS = [*all_acs_subject_variables]
+
+ACS_VARIABLES_COMBINED = all_acs_variables | all_acs_subject_variables
 
 PA_FIPS = {
     "017": "Bucks",
