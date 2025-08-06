@@ -21,6 +21,7 @@ def fetch_sql(file, geo):
 
 
 def get_county_data():
+    log.info('Getting GIS county data...')
     spatial = fetch_sql("spatial", "county")
     pop_emp_forecasts = fetch_sql("pop_emp_forecasts", "county")
     land_use = fetch_sql("land_use", "county")
@@ -28,14 +29,18 @@ def get_county_data():
     dfs = [spatial, pop_emp_forecasts, land_use]
     county_merged = ft.reduce(lambda left, right: pd.merge(
         left, right, on='fips'), dfs)
+    log.info(f'Retrieved ACS data for {len(county_merged)} counties')
     return county_merged
 
+
 def get_muni_data():
+    log.info('Getting GIS muni data...')
     spatial = fetch_sql("spatial", "muni")
     pop_emp_forecasts = fetch_sql("pop_emp_forecasts", "muni")
     land_use = fetch_sql("land_use", "muni")
 
     dfs = [spatial, pop_emp_forecasts, land_use]
-    county_merged = ft.reduce(lambda left, right: pd.merge(
+    muni_merged = ft.reduce(lambda left, right: pd.merge(
         left, right, on='geoid'), dfs)
-    return county_merged
+    log.info(f'Retrieved ACS data for {len(muni_merged)} municipalities')
+    return muni_merged

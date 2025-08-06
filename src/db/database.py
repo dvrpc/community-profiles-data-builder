@@ -18,8 +18,10 @@ write_port = os.getenv("WRITE_DB_PORT")
 log = logging.getLogger(__name__)
 load_dotenv()
 
+
 def get_gis_engine():
-    return create_engine(f"postgresql://{gis_user}:{gis_password}@{gis_host}:{gis_port}/{gis_dbname}")
+    return create_engine(f"postgresql://{gis_user}:{gis_password}@{gis_host}:{gis_port}/{gis_dbname}", connect_args={"connect_timeout": 10})
+
 
 def get_write_engine():
-    return create_engine(f"postgresql://{write_user}:{write_password}@{write_host}:{write_port}/{write_dbname}")
+    return create_engine(f"postgresql://{write_user}:{write_password}@{write_host}:{write_port}/{write_dbname}", connect_args={"connect_timeout": 10})
