@@ -20,7 +20,7 @@ def fetch_sql(file, geo):
         log.error(f"Error executing: \n{file}.sql: \n{err}")
 
 
-def get_county_layers():
+def get_county_data():
     spatial = fetch_sql("spatial", "county")
     pop_emp_forecasts = fetch_sql("pop_emp_forecasts", "county")
     land_use = fetch_sql("land_use", "county")
@@ -28,4 +28,14 @@ def get_county_layers():
     dfs = [spatial, pop_emp_forecasts, land_use]
     county_merged = ft.reduce(lambda left, right: pd.merge(
         left, right, on='fips'), dfs)
+    return county_merged
+
+def get_muni_data():
+    spatial = fetch_sql("spatial", "muni")
+    pop_emp_forecasts = fetch_sql("pop_emp_forecasts", "muni")
+    land_use = fetch_sql("land_use", "muni")
+
+    dfs = [spatial, pop_emp_forecasts, land_use]
+    county_merged = ft.reduce(lambda left, right: pd.merge(
+        left, right, on='geoid'), dfs)
     return county_merged

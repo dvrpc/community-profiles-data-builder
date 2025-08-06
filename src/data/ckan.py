@@ -37,3 +37,12 @@ def get_county_data():
     county_merged = ft.reduce(lambda left, right: pd.merge(
         left, right, on='fips'), dfs)
     return county_merged
+
+def get_muni_data():
+    electric_vehicles = fetch_datastore('electric_vehicles', 'muni')
+    electric_vehicles['geoid'] = electric_vehicles['geoid'].str[:-2]
+    
+    # dfs = [pavement_conditions, bridge_conditions, electric_vehicles, housing_affordability]
+    # muni_merged = ft.reduce(lambda left, right: pd.merge(
+    #     left, right, on='geoid'), dfs)
+    return electric_vehicles
