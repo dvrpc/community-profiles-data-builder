@@ -1,7 +1,7 @@
 SELECT
   c.fips,
   c.co_name, 
-
+  ST_AsText(st_transform(st_envelope(ST_Buffer(c.shape, (st_ymax(c.shape) - st_ymin(c.shape)) * 0.05)), 4326)) as buffer_bbox,
 
   -- Miles of existing trails
 
@@ -135,8 +135,6 @@ SELECT
     FROM transportation.passengerrail pr
     WHERE ST_Intersects(c.shape, pr.shape)
   ), 0) AS passenger_rail_mi
-
-
 
 FROM
   boundaries.countyboundaries c

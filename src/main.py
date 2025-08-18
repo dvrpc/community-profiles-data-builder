@@ -7,7 +7,7 @@ import logging
 log = logging.getLogger(__name__)
 
 def exec():
-    # build_county_data()
+    build_county_data()
     build_muni_data()
     pass
 
