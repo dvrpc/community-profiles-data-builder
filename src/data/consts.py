@@ -6,7 +6,6 @@ acs_variables = {
     "B01001_026E": "female_pop",  # Female population
     "B01002_001E": "median_age",  # Median age
     "B05003_003E": "18_pop",  # Under 18 yrs age
-    "B26108_010E": "65_pop",  # Population 65 years and over
 
     # ---- Race
     "B03002_002E": "not_hispanic_or_latino_pop",  # Not hispanic or latino
