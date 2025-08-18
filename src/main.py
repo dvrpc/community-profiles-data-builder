@@ -41,7 +41,7 @@ def build_county_data():
     df_merged = ft.reduce(lambda left, right: pd.merge(
         left, right, on='fips'), dfs)
 
-    excluded_columns = ['fips', 'state', 'county', 'co_name']
+    excluded_columns = ['fips', 'state', 'county', 'co_name', 'buffer_bbox']
     columns_to_update = [
         col for col in df_merged.columns if col not in excluded_columns]
     df_merged[columns_to_update] = df_merged[columns_to_update].apply(
@@ -59,7 +59,7 @@ def build_muni_data():
     df_merged = ft.reduce(lambda left, right: pd.merge(
         left, right, on='geoid', how='left'), dfs)
 
-    excluded_columns = ['geoid', 'state', 'county', 'mun_name']
+    excluded_columns = ['geoid', 'state', 'county', 'mun_name', 'buffer_bbox']
     columns_to_update = [
         col for col in df_merged.columns if col not in excluded_columns]
     df_merged[columns_to_update] = df_merged[columns_to_update].apply(

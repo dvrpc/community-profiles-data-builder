@@ -1,5 +1,6 @@
 SELECT
   m.geoid,
+  ST_AsText(st_transform(st_envelope(ST_Buffer(m.shape, (st_ymax(m.shape) - st_ymin(m.shape)) * 0.05)), 4326)) as buffer_bbox,
 
 
   -- Miles of existing trails
