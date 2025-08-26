@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 
 def exec():
     build_county_data()
-    build_muni_data()
+    # build_muni_data()
 
 
 def save_data(df: pd.DataFrame, table):
@@ -46,6 +46,8 @@ def build_county_data():
         col for col in df_merged.columns if col not in excluded_columns]
     df_merged[columns_to_update] = df_merged[columns_to_update].apply(
         pd.to_numeric)
+    
+    df_merged = df_merged.rename(columns={'fips': 'geoid'})
 
     save_data(df_merged, 'county')
 
