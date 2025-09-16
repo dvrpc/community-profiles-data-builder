@@ -5,7 +5,7 @@ acs_variables = {
     "B01001_002E": "male_pop",  # Male population
     "B01001_026E": "female_pop",  # Female population
     "B01002_001E": "median_age",  # Median age
-    "B05003_003E": "18_pop",  # Under 18 yrs age
+    "B09001_001E": "under_18_pop",  # Under 18 yrs age
 
     # ---- Race
     "B03002_002E": "not_hispanic_or_latino_pop",  # Not hispanic or latino
@@ -284,24 +284,25 @@ GROUPED_ACS_VARIABLES = [ACS_VARIABLE_KEYS[i:i + 49]
 
 acs_subject_variables = {
     # ---- Age
+    "S0103_C02_001E": "over_65_pop",  # 65 years and over
     "S0101_C01_002E": "under_5_pop",  # Under 5 years
-    "S0101_C01_003E": "5_to_9_pop",  # 5 to 9 years
-    "S0101_C01_004E": "10_to_14_pop",  # 10 to 4 years
-    "S0101_C01_005E": "15_to_19_pop",  # 15 to 19 years
-    "S0101_C01_006E": "20_to_24_pop",  # 20 to 24 years
-    "S0101_C01_007E": "25_to_29_pop",  # 25 to 29 years
-    "S0101_C01_008E": "30_to_34_pop",  # 30 to 34 years
-    "S0101_C01_009E": "35_to_39_pop",  # 35 to 39 years
-    "S0101_C01_010E": "40_to_44_pop",  # 40 to 44 years
-    "S0101_C01_011E": "45_to_49_pop",  # 45 to 49 years
-    "S0101_C01_012E": "50_to_54_pop",  # 50 to 54 years
-    "S0101_C01_013E": "55_to_59_pop",  # 55 to 59 years
-    "S0101_C01_014E": "60_to_64_pop",  # 60 to 64 years
-    "S0101_C01_015E": "65_to_69_pop",  # 65 to 69 years
-    "S0101_C01_016E": "70_to_74_pop",  # 70 to 74 years
-    "S0101_C01_017E": "75_to_79_pop",  # 75 to 79 years
-    "S0101_C01_018E": "80_to_84_pop",  # 80 to 84 years
-    "S0101_C01_019E": "85_over_pop",  # 85 to 9 years
+    "S0101_C01_003E": "age_5_to_9_pop",  # 5 to 9 years
+    "S0101_C01_004E": "age_10_to_14_pop",  # 10 to 4 years
+    "S0101_C01_005E": "age_15_to_19_pop",  # 15 to 19 years
+    "S0101_C01_006E": "age_20_to_24_pop",  # 20 to 24 years
+    "S0101_C01_007E": "age_25_to_29_pop",  # 25 to 29 years
+    "S0101_C01_008E": "age_30_to_34_pop",  # 30 to 34 years
+    "S0101_C01_009E": "age_35_to_39_pop",  # 35 to 39 years
+    "S0101_C01_010E": "age_40_to_44_pop",  # 40 to 44 years
+    "S0101_C01_011E": "age_45_to_49_pop",  # 45 to 49 years
+    "S0101_C01_012E": "age_50_to_54_pop",  # 50 to 54 years
+    "S0101_C01_013E": "age_55_to_59_pop",  # 55 to 59 years
+    "S0101_C01_014E": "age_60_to_64_pop",  # 60 to 64 years
+    "S0101_C01_015E": "age_65_to_69_pop",  # 65 to 69 years
+    "S0101_C01_016E": "age_70_to_74_pop",  # 70 to 74 years
+    "S0101_C01_017E": "age_75_to_79_pop",  # 75 to 79 years
+    "S0101_C01_018E": "age_80_to_84_pop",  # 80 to 84 years
+    "S0101_C01_019E": "age_85_over_pop",  # 85 to 9 years
 
     # ECONOMIC
     # ---- Economic Summary

@@ -42,5 +42,5 @@ def get_muni_data():
     dfs = [spatial, pop_emp_forecasts, land_use]
     muni_merged = ft.reduce(lambda left, right: pd.merge(
         left, right, on='geoid'), dfs)
-    log.info(f'Retrieved ACS data for {len(muni_merged)} municipalities')
+    log.info(f'Retrieved GIS data for {len(muni_merged)} municipalities')
     return muni_merged
