@@ -1,4 +1,4 @@
-from .data import acs, gis, ckan
+from .data import acs, gis, ckan, regional
 from .db.database import get_write_engine
 import pandas as pd
 import functools as ft
@@ -9,8 +9,9 @@ log = logging.getLogger(__name__)
 
 
 def exec():
-    build_county_data()
-    build_muni_data()
+    # build_county_data()
+    # build_muni_data()
+    build_regional_data()
 
 
 def save_data(df: pd.DataFrame, table):
@@ -48,7 +49,6 @@ def build_county_data():
         pd.to_numeric)
 
     df_merged = df_merged.rename(columns={'fips': 'geoid'})
-
     save_data(df_merged, 'county')
 
 
@@ -68,3 +68,16 @@ def build_muni_data():
         to_numeric)
 
     save_data(df_merged, 'municipality')
+
+
+def build_regional_data():
+    county_data = regional.get_county_data()
+
+    # Aggregates summable fields and margin of error
+    regional_data = regional.aggregate_data(county_data)
+
+    print(regional_data)
+    # Averages median/mean/pct fields and margin of error
+    # county_data = regional.average_data(county_data)
+
+    # save to db

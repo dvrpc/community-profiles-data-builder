@@ -1,3 +1,18 @@
+non_aggregatable_variables = {
+    "median_age",
+    "poppct50",
+    "median_hh_inc",
+    "median_family_inc",
+    "median_inc",
+    "mean_family_inc",
+    "avg_family_size",
+    "emppct50",
+    "avg_hh_size",
+    "pct_ev_ldv",
+    "pct_change_ev",
+    "pct_change_ldv"
+}
+
 acs_variables = {
     # DEMOGRAPHICS
     # ---- Demographic Summary
@@ -326,6 +341,7 @@ for key, value in acs_subject_variables.items():
 ACS_SUBJECT_VARIABLE_KEYS = [*all_acs_subject_variables]
 
 ACS_VARIABLES_COMBINED = all_acs_variables | all_acs_subject_variables
+ALL_VARIABLES_COMBINED_VALUES = list(ACS_VARIABLES_COMBINED.values())
 
 PA_FIPS = {
     "017": "Bucks",
