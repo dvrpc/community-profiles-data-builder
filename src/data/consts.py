@@ -1,17 +1,4 @@
-non_aggregatable_variables = {
-    "median_age",
-    "poppct50",
-    "median_hh_inc",
-    "median_family_inc",
-    "median_inc",
-    "mean_family_inc",
-    "avg_family_size",
-    "emppct50",
-    "avg_hh_size",
-    "pct_ev_ldv",
-    "pct_change_ev",
-    "pct_change_ldv"
-}
+
 
 acs_variables = {
     # DEMOGRAPHICS

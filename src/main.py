@@ -76,7 +76,8 @@ def build_regional_data():
     # Aggregates summable fields and margin of error
     regional_data = regional.aggregate_data(county_data)
 
-    print(regional_data)
+    save_data(regional_data, 'region')
+
     # Averages median/mean/pct fields and margin of error
     # county_data = regional.average_data(county_data)
 

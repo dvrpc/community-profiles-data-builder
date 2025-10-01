@@ -1,8 +1,9 @@
 import logging
 import math
+import numpy as np
 import pandas as pd
 from src.db.database import get_write_engine
-from .consts import ALL_VARIABLES_COMBINED_VALUES, non_aggregatable_variables
+from .consts import ALL_VARIABLES_COMBINED_VALUES
 
 log = logging.getLogger(__name__)
 
@@ -14,6 +15,29 @@ excluded_variables = {
     "buffer_bbox"
 }
 
+non_aggregatable_variables = {
+    "median_age",
+    "median_age_moe",
+    "median_hh_inc",
+    "median_hh_inc_moe",
+    "median_family_inc",
+    "median_family_inc_moe",
+    "median_inc",
+    "median_inc_moe",
+    "mean_family_inc",
+    "mean_family_inc_moe",
+    "avg_family_size",
+    "avg_family_size_moe",
+    "avg_hh_size",
+    "avg_hh_size_moe",
+    "pct_ev_ldv",
+    "pct_change_ev",
+    "pct_change_ldv"
+    "emppct50",
+    "poppct50",
+
+
+}
 
 def get_county_data():
     log.info('Fetching county data...')
@@ -30,27 +54,28 @@ def get_county_data():
 
 
 def aggregate_data(county_data: pd.DataFrame):
-    aggregate_data = pd.DataFrame()
-
+    aggregate_data = {}
     for variable in ALL_VARIABLES_COMBINED_VALUES:
+        # summable_variables = ALL_VARIABLES_COMBINED_VALUES.copy()
+        
+        # for v in summable_variables:
+        #     if v in excluded_variables.union(non_aggregatable_variables):
+        #         summable_variables.pop(v, None)
+                
         if variable not in excluded_variables.union(non_aggregatable_variables):
-            aggregate_data[variable] = county_data[variable].sum()
+            if("moe" in variable):
+                if(not (county_data[variable] == -555555555).any()):
+                    aggregate_data[variable] = np.sqrt((county_data[variable]**2).sum())
+                else:
+                    print(variable)
+            else:
+                aggregate_data[variable] = county_data[variable].sum()
 
-            moe_variable = f"${variable}_moe"
 
-            try:
-                aggregate_data[moe_variable] = sum_moe(
-                    county_data[moe_variable].to_list())
-            except KeyError:
-                log.info(f"${moe_variable} not present in database")
-
-    return aggregate_data
+    return pd.DataFrame([aggregate_data])
 
 
 def average_data(county_data):
     pass
 
 
-def sum_moe(county_moe):
-    sum_square = [moe ** 2 for moe in county_moe]
-    return math.sqrt(sum_square)
