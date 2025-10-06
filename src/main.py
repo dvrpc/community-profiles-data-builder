@@ -9,8 +9,8 @@ log = logging.getLogger(__name__)
 
 
 def exec():
-    build_county_data()
-    build_muni_data()
+    # build_county_data()
+    # build_muni_data()
     build_regional_data()
 
 
@@ -71,7 +71,7 @@ def build_muni_data():
 
 
 def build_regional_data():
-    county_data = regional.get_county_data()
+    county_data = regional.get_profile_data("SELECT * FROM county", "all county data")
 
     # Aggregates summable fields and margin of error
     regional_data = regional.aggregate_data(county_data)

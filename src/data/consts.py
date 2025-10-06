@@ -27,7 +27,7 @@ acs_variables = {
     "B25003_003E": "rent_hh",  # Renter occupied households
     "B19013_001E": "median_hh_inc",  # Median Household Income
     "B19113_001E": "median_family_inc",  # Median Family Income
-    "B19301_001E": "median_inc",  # Median Income (Per Capita Income)
+    "B19301_001E": "per_cap_inc",  # per_cap_inc
     "B17001_002E": "pov_level",  # Below poverty level
     "B23025_002E": "labor_force",  # Over 16 in labor force
 

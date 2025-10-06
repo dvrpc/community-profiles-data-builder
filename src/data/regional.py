@@ -41,18 +41,6 @@ non_aggregatable_variables = {
 
 }
 
-def get_county_data():
-    log.info('Fetching county data...')
-    engine = get_write_engine()
-    try:
-        county_data = pd.read_sql("SELECT * FROM county", engine)
-        log.info('Succesfully fetched county data')
-
-    except Exception as e:
-        log.error('Error fetching county data')
-
-    engine.dispose()
-    return county_data
 
 hh_median_income_range_data = [
     {"range_start": 0, "range_end": 9999, "variable": "hh_inc_10k"},
@@ -121,6 +109,8 @@ def aggregate_data(county_data: pd.DataFrame):
     recalcute_median(hh_median_income_range_data, 1.5)
     recalcute_median(median_age_range_data, 1)
     recalcute_median(fam_median_income_range_data, 1.5)
+    
+    recalculate_mean("per_cap_inc")
 
     # for variable in list(county_data.columns):
     #     # summable_variables = ALL_VARIABLES_COMBINED_VALUES.copy()
@@ -149,15 +139,15 @@ def aggregate_data(county_data: pd.DataFrame):
     # return pd.DataFrame([aggregate_data])
 
 
-def get_median_range_data(query):
-    log.info('Getting median range data...')
+def get_profile_data(query, desc):
+    log.info(f'Getting {desc}...')
     engine = get_write_engine()
     try:
         range_data = pd.read_sql(query, engine)
-        log.info('Succesfully fetched median range data')
+        log.info(f'Succesfully fetched {desc}')
 
     except Exception as e:
-        log.error('Error fetching median range data')
+        log.error(f'Error fetching {desc}')
 
     engine.dispose()
     return range_data
@@ -172,7 +162,7 @@ def recalcute_median(range_data, design_factor=1.5):
     comma_seperated_sums = ", ".join(formatted_variables)
     query = f"SELECT {comma_seperated_sums} FROM county WHERE state = 'Pennsylvania'"
 
-    result = get_median_range_data(query)
+    result = get_profile_data(query, "median range data")
     melted = result.melt(var_name="variable", value_name="count")
     range_df = pd.DataFrame(range_data)
 
@@ -272,6 +262,25 @@ def median_from_bins(counts, lower, upper, DF=1.5):
         moe90 = se_to_moe90(SE_med)
 
     return {"estimate": med_est, "moe90": moe90}
+
+def recalculate_mean(variable):
+    df = get_profile_data(f"SELECT total_pop, {variable}, {variable + '_moe'} FROM county WHERE state='Pennsylvania'", "per cap income data")
+    
+    total_pop = df['total_pop'].sum()
+    total = df[variable].sum()
+    
+    print(total_pop)
+    print(total)
+    
+    total_moe = aggregate_moe(df[variable + '_moe'])
+    
+    total_mean = total / total_pop
+    total_mean_moe = total_moe / total_pop
+    
+    print({"estimate": total_mean, "moe": total_mean_moe})
+    return {"estimate": total_mean, "moe": total_mean_moe}
+
+    
 
 
 if __name__ == '__main__':
