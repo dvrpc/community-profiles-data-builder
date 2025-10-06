@@ -183,6 +183,24 @@ acs_variables = {
     "B19001_016E": "hh_inc_150k_200k",  # Household Income $150,000 to $199,999
     "B19001_017E": "hh_inc_200k",  # Household Income $200,000 and more
 
+
+    # ---- Family Income
+    "B19101_002E": "fam_inc_10k",  # Family Income Less than $10,0000
+    "B19101_003E": "fam_inc_10k_15k",  # Family Income $10,000 to $14,999
+    "B19101_004E": "fam_inc_15k_20k",  # Family Income $15,000 to $19,999
+    "B19101_005E": "fam_inc_20k_25k",  # Family Income $20,000 to $24,999
+    "B19101_006E": "fam_inc_25k_30k",  # Family Income $25,000 to $29,999
+    "B19101_007E": "fam_inc_30k_35k",  # Family Income $30,000 to $34,999
+    "B19101_008E": "fam_inc_35k_40k",  # Family Income $35,000 to $39,999
+    "B19101_009E": "fam_inc_40k_45k",  # Family Income $40,000 to $44,999
+    "B19101_010E": "fam_inc_45k_50k",  # Family Income $45,000 to $49,999
+    "B19101_011E": "fam_inc_50k_60k",  # Family Income $50,000 to $59,999
+    "B19101_012E": "fam_inc_60k_75k",  # Family Income $60,000 to $74,999
+    "B19101_013E": "fam_inc_75k_100k",  # Family Income $75,000 to $99,999
+    "B19101_014E": "fam_inc_100k_125k",  # Family Income $100,000 to $124,999
+    "B19101_015E": "fam_inc_125k_150k",  # Family Income $120,000 to $149,999
+    "B19101_016E": "fam_inc_150k_200k",  # Family Income $150,000 to $199,999
+    "B19101_017E": "fam_inc_200k",  # Family Income $200,000 and more
     # --- Housing
 
     # ---- Vehicle Availability

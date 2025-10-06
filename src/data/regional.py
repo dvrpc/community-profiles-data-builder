@@ -15,6 +15,8 @@ excluded_variables = {
     "buffer_bbox"
 }
 
+
+
 non_aggregatable_variables = {
     "median_age",
     "median_age_moe",
@@ -52,30 +54,225 @@ def get_county_data():
     engine.dispose()
     return county_data
 
+hh_median_income_range_data = [
+    {"range_start": 0, "range_end": 9999, "variable": "hh_inc_10k"},
+    {"range_start": 10000, "range_end": 14999, "variable": "hh_inc_10k_15k"},
+    {"range_start": 15000, "range_end": 19999, "variable": "hh_inc_15k_20k"},
+    {"range_start": 20000, "range_end": 24999, "variable": "hh_inc_20k_25k"},
+    {"range_start": 25000, "range_end": 29999, "variable": "hh_inc_25k_30k"},
+    {"range_start": 30000, "range_end": 34999, "variable": "hh_inc_30k_35k"},
+    {"range_start": 35000, "range_end": 39999, "variable": "hh_inc_35k_40k"},
+    {"range_start": 40000, "range_end": 44999, "variable": "hh_inc_40k_45k"},  # <- mid-range
+    {"range_start": 45000, "range_end": 49999, "variable": "hh_inc_45k_50k"},
+    {"range_start": 50000, "range_end": 59999, "variable": "hh_inc_50k_60k"},
+    {"range_start": 60000, "range_end": 74999, "variable": "hh_inc_60k_75k"},
+    {"range_start": 75000, "range_end": 99999, "variable": "hh_inc_75k_100k"},
+    {"range_start": 100000, "range_end": 124999, "variable": "hh_inc_100k_125k"},
+    {"range_start": 125000, "range_end": 149999, "variable": "hh_inc_125k_150k"},
+    {"range_start": 150000, "range_end": 199999, "variable": "hh_inc_150k_200k"},
+    {"range_start": 200000, "range_end": None, "variable": "hh_inc_200k"}
+]
+
+fam_median_income_range_data = [
+    {"range_start": 0, "range_end": 9999, "variable": "fam_inc_10k"},
+    {"range_start": 10000, "range_end": 14999, "variable": "fam_inc_10k_15k"},
+    {"range_start": 15000, "range_end": 19999, "variable": "fam_inc_15k_20k"},
+    {"range_start": 20000, "range_end": 24999, "variable": "fam_inc_20k_25k"},
+    {"range_start": 25000, "range_end": 29999, "variable": "fam_inc_25k_30k"},
+    {"range_start": 30000, "range_end": 34999, "variable": "fam_inc_30k_35k"},
+    {"range_start": 35000, "range_end": 39999, "variable": "fam_inc_35k_40k"},
+    {"range_start": 40000, "range_end": 44999, "variable": "fam_inc_40k_45k"},  # <- mid-range
+    {"range_start": 45000, "range_end": 49999, "variable": "fam_inc_45k_50k"},
+    {"range_start": 50000, "range_end": 59999, "variable": "fam_inc_50k_60k"},
+    {"range_start": 60000, "range_end": 74999, "variable": "fam_inc_60k_75k"},
+    {"range_start": 75000, "range_end": 99999, "variable": "fam_inc_75k_100k"},
+    {"range_start": 100000, "range_end": 124999, "variable": "fam_inc_100k_125k"},
+    {"range_start": 125000, "range_end": 149999, "variable": "fam_inc_125k_150k"},
+    {"range_start": 150000, "range_end": 199999, "variable": "fam_inc_150k_200k"},
+    {"range_start": 200000, "range_end": None, "variable": "fam_inc_200k"}
+]
+
+median_age_range_data = [
+    {"range_start": 0, "range_end": 4, "variable": "under_5_pop"},
+    {"range_start": 5, "range_end": 9, "variable": "age_5_to_9_pop"},
+    {"range_start": 10, "range_end": 14, "variable": "age_10_to_14_pop"},
+    {"range_start": 15, "range_end": 19, "variable": "age_15_to_19_pop"},
+    {"range_start": 20, "range_end": 24, "variable": "age_20_to_24_pop"},
+    {"range_start": 25, "range_end": 29, "variable": "age_25_to_29_pop"},
+    {"range_start": 30, "range_end": 34, "variable": "age_30_to_34_pop"},
+    {"range_start": 35, "range_end": 39, "variable": "age_35_to_39_pop"},  # <- mid-range
+    {"range_start": 40, "range_end": 44, "variable": "age_40_to_44_pop"},
+    {"range_start": 45, "range_end": 49, "variable": "age_45_to_49_pop"},
+    {"range_start": 50, "range_end": 54, "variable": "age_50_to_54_pop"},
+    {"range_start": 55, "range_end": 59, "variable": "age_55_to_59_pop"},
+    {"range_start": 60, "range_end": 64, "variable": "age_60_to_64_pop"},
+    {"range_start": 65, "range_end": 69, "variable": "age_65_to_69_pop"},
+    {"range_start": 70, "range_end": 74, "variable": "age_70_to_74_pop"},
+    {"range_start": 75, "range_end": 79, "variable": "age_75_to_79_pop"},
+    {"range_start": 80, "range_end": 84, "variable": "age_80_to_84_pop"},
+    {"range_start": 85, "range_end": None, "variable": "age_85_over_pop"}
+]
+
+def aggregate_moe(column):
+    return np.sqrt((column**2).sum())
 
 def aggregate_data(county_data: pd.DataFrame):
     aggregate_data = {}
-    for variable in ALL_VARIABLES_COMBINED_VALUES:
-        # summable_variables = ALL_VARIABLES_COMBINED_VALUES.copy()
+    recalcute_median(hh_median_income_range_data, 1.5)
+    recalcute_median(median_age_range_data, 1)
+    recalcute_median(fam_median_income_range_data, 1.5)
+
+    # for variable in list(county_data.columns):
+    #     # summable_variables = ALL_VARIABLES_COMBINED_VALUES.copy()
         
-        # for v in summable_variables:
-        #     if v in excluded_variables.union(non_aggregatable_variables):
-        #         summable_variables.pop(v, None)
+    #     # for v in summable_variables:
+    #     #     if v in excluded_variables.union(non_aggregatable_variables):
+    #     #         summable_variables.pop(v, None)
                 
-        if variable not in excluded_variables.union(non_aggregatable_variables):
-            if("moe" in variable):
-                if(not (county_data[variable] == -555555555).any()):
-                    aggregate_data[variable] = np.sqrt((county_data[variable]**2).sum())
-                else:
-                    print(variable)
-            else:
-                aggregate_data[variable] = county_data[variable].sum()
+    #     if variable not in excluded_variables:
+    #         if variable not in non_aggregatable_variables:
+    #             if "moe" in variable:
+    #                 if(not (county_data[variable] == -555555555).any()):
+    #                     aggregate_data[variable] = aggregate_moe(county_data[variable])
+    #                 else:
+    #                     aggregate_data[variable] = None
+    #             else:
+    #                 aggregate_data[variable] = county_data[variable].sum()
+    #         else:
+    #             aggregate_data[variable] = None
+                
 
 
-    return pd.DataFrame([aggregate_data])
+            
 
 
-def average_data(county_data):
-    pass
+    # return pd.DataFrame([aggregate_data])
 
 
+def get_median_range_data(query):
+    log.info('Getting median range data...')
+    engine = get_write_engine()
+    try:
+        range_data = pd.read_sql(query, engine)
+        log.info('Succesfully fetched median range data')
+
+    except Exception as e:
+        log.error('Error fetching median range data')
+
+    engine.dispose()
+    return range_data
+    
+def recalcute_median(range_data, design_factor=1.5):
+    variables = [range['variable'] for range in range_data]
+    
+    formatted_variables = []
+    for v in variables:
+        formatted_variables.append(f"SUM({v}) AS {v}")
+
+    comma_seperated_sums = ", ".join(formatted_variables)
+    query = f"SELECT {comma_seperated_sums} FROM county WHERE state = 'Pennsylvania'"
+
+    result = get_median_range_data(query)
+    melted = result.melt(var_name="variable", value_name="count")
+    range_df = pd.DataFrame(range_data)
+
+    df = melted.merge(range_df, on="variable", how="left")
+    print(median_from_bins(df['count'], df['range_start'], df['range_end'], design_factor))
+
+
+
+
+def se_to_moe90(se):
+    """Convert standard error to 90% margin of error."""
+    return 1.645 * se
+
+def median_from_bins(counts, lower, upper, DF=1.5):
+    """    
+    Parameters
+    ----------
+    counts : list or array-like
+        Bin counts for each range.
+    lower : list or array-like
+        Lower bounds of bins.
+    upper : list or array-like
+        Upper bounds of bins (can be np.inf for open-ended top range).
+    DF : float, optional
+        Design factor (default 1.5 for income).
+
+    Returns
+    -------
+    dict with keys:
+        'estimate' : median estimate
+        'moe90'    : 90% margin of error
+    """
+
+    counts = np.array(counts, dtype=float)
+    lower = np.array(lower, dtype=float)
+    upper = np.array(upper, dtype=float)
+
+    # Input validation
+    if not (len(counts) == len(lower) == len(upper)):
+        raise ValueError("counts, lower, and upper must have same length")
+
+    B = np.nansum(counts)
+    if B == 0:
+        return {"estimate": np.nan, "moe90": np.nan}
+
+    # Step 1: cumulative counts and percents
+    cum_ct = np.cumsum(counts)
+    cum_pc = 100 * cum_ct / B
+
+    # Step 2: mid-rank (half the total)
+    mid_rank = B / 2.0
+
+    # Step 3: find bin containing the median
+    b = np.argmax(cum_ct >= mid_rank)
+    Lb = lower[b]
+    Ub = upper[b]
+    width = (Ub - Lb + 1) if np.isfinite(Ub) else np.nan
+
+    cum_below = 0 if b == 0 else cum_ct[b - 1]
+    needed = mid_rank - cum_below
+    prop_in_b = needed / counts[b] if counts[b] > 0 else np.nan
+
+    # Step 4: median estimate
+    med_est = np.nan if np.isnan(width) else (Lb + prop_in_b * width)
+
+    # Step 5: MOE steps (A–G)
+    # A: SE(50%) using DF
+    SE50 = DF * math.sqrt((99 / B) * (50 ** 2))
+    p_low = 50 - SE50
+    p_up = 50 + SE50
+
+    # Helper: map a percentile p to value via interpolation
+    def p_to_value(p):
+        j_candidates = np.where(cum_pc >= p)[0]
+        if len(j_candidates) == 0:
+            return np.nan
+        j = j_candidates[0]
+
+        if not np.isfinite(upper[j]):  # open-ended bin
+            return np.nan
+
+        A1 = lower[j]
+        A2 = lower[j + 1] if j + 1 < len(lower) else upper[j] + 1
+        C1 = 0 if j == 0 else cum_pc[j - 1]
+        C2 = cum_pc[j]
+        frac = (p - C1) / (C2 - C1)
+        return A1 + frac * (A2 - A1)
+
+    LB = p_to_value(p_low)
+    UB = p_to_value(p_up)
+
+    # Step 6: SE(median) and MOE
+    if np.isnan(LB) or np.isnan(UB):
+        moe90 = np.nan
+    else:
+        SE_med = 0.5 * (UB - LB)
+        moe90 = se_to_moe90(SE_med)
+
+    return {"estimate": med_est, "moe90": moe90}
+
+
+if __name__ == '__main__':
+    recalcute_median()
