@@ -2,6 +2,8 @@ import logging
 import math
 import numpy as np
 import pandas as pd
+from src.data.ckan import fetch_datastore
+from src.data.gis import fetch_sql
 from src.db.database import get_write_engine
 from .consts import ALL_VARIABLES_COMBINED_VALUES
 
@@ -16,7 +18,6 @@ excluded_variables = {
 }
 
 
-
 non_aggregatable_variables = {
     "median_age",
     "median_age_moe",
@@ -24,14 +25,14 @@ non_aggregatable_variables = {
     "median_hh_inc_moe",
     "median_family_inc",
     "median_family_inc_moe",
-    "median_inc",
-    "median_inc_moe",
+    "per_cap_inc",
+    "per_cap_inc_moe",
     "mean_family_inc",
     "mean_family_inc_moe",
-    "avg_family_size",
-    "avg_family_size_moe",
-    "avg_hh_size",
-    "avg_hh_size_moe",
+    "mean_family_size",
+    "mean_family_size_moe",
+    "mean_hh_size",
+    "mean_hh_size_moe",
     "pct_ev_ldv",
     "pct_change_ev",
     "pct_change_ldv"
@@ -50,7 +51,7 @@ hh_median_income_range_data = [
     {"range_start": 25000, "range_end": 29999, "variable": "hh_inc_25k_30k"},
     {"range_start": 30000, "range_end": 34999, "variable": "hh_inc_30k_35k"},
     {"range_start": 35000, "range_end": 39999, "variable": "hh_inc_35k_40k"},
-    {"range_start": 40000, "range_end": 44999, "variable": "hh_inc_40k_45k"},  # <- mid-range
+    {"range_start": 40000, "range_end": 44999, "variable": "hh_inc_40k_45k"},
     {"range_start": 45000, "range_end": 49999, "variable": "hh_inc_45k_50k"},
     {"range_start": 50000, "range_end": 59999, "variable": "hh_inc_50k_60k"},
     {"range_start": 60000, "range_end": 74999, "variable": "hh_inc_60k_75k"},
@@ -69,7 +70,7 @@ fam_median_income_range_data = [
     {"range_start": 25000, "range_end": 29999, "variable": "fam_inc_25k_30k"},
     {"range_start": 30000, "range_end": 34999, "variable": "fam_inc_30k_35k"},
     {"range_start": 35000, "range_end": 39999, "variable": "fam_inc_35k_40k"},
-    {"range_start": 40000, "range_end": 44999, "variable": "fam_inc_40k_45k"},  # <- mid-range
+    {"range_start": 40000, "range_end": 44999, "variable": "fam_inc_40k_45k"},
     {"range_start": 45000, "range_end": 49999, "variable": "fam_inc_45k_50k"},
     {"range_start": 50000, "range_end": 59999, "variable": "fam_inc_50k_60k"},
     {"range_start": 60000, "range_end": 74999, "variable": "fam_inc_60k_75k"},
@@ -88,7 +89,7 @@ median_age_range_data = [
     {"range_start": 20, "range_end": 24, "variable": "age_20_to_24_pop"},
     {"range_start": 25, "range_end": 29, "variable": "age_25_to_29_pop"},
     {"range_start": 30, "range_end": 34, "variable": "age_30_to_34_pop"},
-    {"range_start": 35, "range_end": 39, "variable": "age_35_to_39_pop"},  # <- mid-range
+    {"range_start": 35, "range_end": 39, "variable": "age_35_to_39_pop"},
     {"range_start": 40, "range_end": 44, "variable": "age_40_to_44_pop"},
     {"range_start": 45, "range_end": 49, "variable": "age_45_to_49_pop"},
     {"range_start": 50, "range_end": 54, "variable": "age_50_to_54_pop"},
@@ -101,42 +102,61 @@ median_age_range_data = [
     {"range_start": 85, "range_end": None, "variable": "age_85_over_pop"}
 ]
 
+
 def aggregate_moe(column):
     return np.sqrt((column**2).sum())
 
+
 def aggregate_data(county_data: pd.DataFrame):
     aggregate_data = {}
-    recalcute_median(hh_median_income_range_data, 1.5)
-    recalcute_median(median_age_range_data, 1)
-    recalcute_median(fam_median_income_range_data, 1.5)
-    
-    recalculate_mean("per_cap_inc")
 
-    # for variable in list(county_data.columns):
-    #     # summable_variables = ALL_VARIABLES_COMBINED_VALUES.copy()
-        
-    #     # for v in summable_variables:
-    #     #     if v in excluded_variables.union(non_aggregatable_variables):
-    #     #         summable_variables.pop(v, None)
-                
-    #     if variable not in excluded_variables:
-    #         if variable not in non_aggregatable_variables:
-    #             if "moe" in variable:
-    #                 if(not (county_data[variable] == -555555555).any()):
-    #                     aggregate_data[variable] = aggregate_moe(county_data[variable])
-    #                 else:
-    #                     aggregate_data[variable] = None
-    #             else:
-    #                 aggregate_data[variable] = county_data[variable].sum()
-    #         else:
-    #             aggregate_data[variable] = None
-                
+    def add_variables(recalculated_data, variable):
+        nonlocal aggregate_data
 
+        aggregate_data[variable] = recalculated_data['estimate']
+        aggregate_data[variable + '_moe'] = recalculated_data['moe']
 
-            
+    add_variables(recalcute_median(
+        hh_median_income_range_data, 1.5), 'median_hh_inc')
+    add_variables(recalcute_median(median_age_range_data, 1), 'median_age')
+    add_variables(recalcute_median(
+        fam_median_income_range_data, 1.5), 'median_family_inc')
+    add_variables(recalculate_mean("per_cap_inc", "total_pop",
+                  "per capita income"), 'per_cap_inc')
+    add_variables(recalculate_mean("mean_family_inc", "total_fam",
+                                   "mean family income"), 'mean_family_inc')
+    add_variables(recalculate_mean("mean_family_size",
+                  "total_fam", "mean family size"), 'mean_family_size')
+    add_variables(recalculate_mean("mean_hh_size",
+                  "total_hh", "mean household size"), 'mean_hh_size')
 
+    # this could be done directly in sql
 
-    # return pd.DataFrame([aggregate_data])
+    regional_ev_data = fetch_datastore(
+        'electric_vehicle', 'regional')
+    pop_emp_regional_data = fetch_sql(
+        'pop_emp_forecasts', 'regional')
+
+    for variable in list(county_data.columns):
+
+        if variable not in excluded_variables:
+            if variable not in non_aggregatable_variables:
+                if "moe" in variable:
+                    if (not (county_data[variable] == -555555555).any()):
+                        aggregate_data[variable] = aggregate_moe(
+                            county_data[variable])
+                    else:
+                        aggregate_data[variable] = None
+                else:
+                    aggregate_data[variable] = county_data[variable].sum()
+            else:
+                if (variable not in aggregate_data):
+                    aggregate_data[variable] = None
+
+    df = pd.DataFrame([aggregate_data])
+    df.update(regional_ev_data)
+    df.update(pop_emp_regional_data)
+    return df
 
 
 def get_profile_data(query, desc):
@@ -151,30 +171,31 @@ def get_profile_data(query, desc):
 
     engine.dispose()
     return range_data
-    
+
+
 def recalcute_median(range_data, design_factor=1.5):
     variables = [range['variable'] for range in range_data]
-    
+
     formatted_variables = []
     for v in variables:
         formatted_variables.append(f"SUM({v}) AS {v}")
 
     comma_seperated_sums = ", ".join(formatted_variables)
-    query = f"SELECT {comma_seperated_sums} FROM county WHERE state = 'Pennsylvania'"
+    query = f"SELECT {comma_seperated_sums} FROM county"
 
     result = get_profile_data(query, "median range data")
     melted = result.melt(var_name="variable", value_name="count")
     range_df = pd.DataFrame(range_data)
 
     df = melted.merge(range_df, on="variable", how="left")
-    print(median_from_bins(df['count'], df['range_start'], df['range_end'], design_factor))
-
-
+    return median_from_bins(
+        df['count'], df['range_start'], df['range_end'], design_factor)
 
 
 def se_to_moe90(se):
     """Convert standard error to 90% margin of error."""
     return 1.645 * se
+
 
 def median_from_bins(counts, lower, upper, DF=1.5):
     """    
@@ -261,27 +282,22 @@ def median_from_bins(counts, lower, upper, DF=1.5):
         SE_med = 0.5 * (UB - LB)
         moe90 = se_to_moe90(SE_med)
 
-    return {"estimate": med_est, "moe90": moe90}
-
-def recalculate_mean(variable):
-    df = get_profile_data(f"SELECT total_pop, {variable}, {variable + '_moe'} FROM county WHERE state='Pennsylvania'", "per cap income data")
-    
-    total_pop = df['total_pop'].sum()
-    total = df[variable].sum()
-    
-    print(total_pop)
-    print(total)
-    
-    total_moe = aggregate_moe(df[variable + '_moe'])
-    
-    total_mean = total / total_pop
-    total_mean_moe = total_moe / total_pop
-    
-    print({"estimate": total_mean, "moe": total_mean_moe})
-    return {"estimate": total_mean, "moe": total_mean_moe}
-
-    
+    return {"estimate": med_est, "moe": moe90}
 
 
-if __name__ == '__main__':
-    recalcute_median()
+def recalculate_mean(numerator_var, denominator_var, desc):
+    df = get_profile_data(
+        f"SELECT {denominator_var}, {numerator_var}, {numerator_var + '_moe'} FROM county", desc)
+
+    total_denom = df[denominator_var].sum()
+    agg_numer_product = df[denominator_var] * df[numerator_var]
+    agg_numer_sum = agg_numer_product.sum()
+
+    agg_product_me = df[denominator_var] * df[numerator_var + '_moe']
+
+    agg_moe = aggregate_moe(agg_product_me)
+
+    mean = agg_numer_sum / total_denom
+    mean_moe = agg_moe / total_denom
+
+    return {"estimate": mean, "moe": mean_moe}

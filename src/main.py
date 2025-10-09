@@ -15,7 +15,7 @@ def exec():
 
 
 def save_data(df: pd.DataFrame, table):
-    log.info(f'Wrting dataframe to {table} table')
+    log.info(f'Writing dataframe to {table} table')
     engine = get_write_engine()
     try:
         df.to_sql(table, engine, if_exists='replace', index=False)
@@ -71,11 +71,12 @@ def build_muni_data():
 
 
 def build_regional_data():
-    county_data = regional.get_profile_data("SELECT * FROM county", "all county data")
+    county_data = regional.get_profile_data(
+        "SELECT * FROM county", "all county data")
 
     # Aggregates summable fields and margin of error
     regional_data = regional.aggregate_data(county_data)
-
+    print(regional_data)
     save_data(regional_data, 'region')
 
     # Averages median/mean/pct fields and margin of error

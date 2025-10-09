@@ -220,7 +220,7 @@ acs_variables = {
     # ---- Social Summary
     "B11001_002E": "family_hh",  # family households
     "B11001_007E": "nonfamily_hh",  # nonfamily households
-    "B25010_001E": "avg_hh_size",  # average household size
+    "B25010_001E": "mean_hh_size",  # average household size
 
     # ---- Educational Attainment
     "B06009_002E": "less_hs",  # Less than a high school graduate
@@ -332,7 +332,9 @@ acs_subject_variables = {
     "S1901_C02_013E": "mean_family_inc",  # mean family income
 
     # ---- Social Summary
-    "S1101_C01_004E": "avg_family_size",  # average family size
+    "S1101_C01_003E": "total_fam",
+    "S1101_C01_004E": "mean_family_size",  # average family size
+
 
 
 }
@@ -344,6 +346,8 @@ for key, value in acs_subject_variables.items():
     all_acs_subject_variables[key[:-1] + 'M'] = value + '_moe'
 
 ACS_SUBJECT_VARIABLE_KEYS = [*all_acs_subject_variables]
+GROUPED_ACS_SUBJECT_VARIABLES = [ACS_SUBJECT_VARIABLE_KEYS[i:i + 49]
+                                 for i in range(0, len(ACS_SUBJECT_VARIABLE_KEYS), 49)]
 
 ACS_VARIABLES_COMBINED = all_acs_variables | all_acs_subject_variables
 ALL_VARIABLES_COMBINED_VALUES = list(ACS_VARIABLES_COMBINED.values())
