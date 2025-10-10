@@ -1,17 +1,4 @@
-non_aggregatable_variables = {
-    "median_age",
-    "poppct50",
-    "median_hh_inc",
-    "median_family_inc",
-    "median_inc",
-    "mean_family_inc",
-    "avg_family_size",
-    "emppct50",
-    "avg_hh_size",
-    "pct_ev_ldv",
-    "pct_change_ev",
-    "pct_change_ldv"
-}
+
 
 acs_variables = {
     # DEMOGRAPHICS
@@ -40,7 +27,7 @@ acs_variables = {
     "B25003_003E": "rent_hh",  # Renter occupied households
     "B19013_001E": "median_hh_inc",  # Median Household Income
     "B19113_001E": "median_family_inc",  # Median Family Income
-    "B19301_001E": "median_inc",  # Median Income (Per Capita Income)
+    "B19301_001E": "per_cap_inc",  # per_cap_inc
     "B17001_002E": "pov_level",  # Below poverty level
     "B23025_002E": "labor_force",  # Over 16 in labor force
 
@@ -196,6 +183,24 @@ acs_variables = {
     "B19001_016E": "hh_inc_150k_200k",  # Household Income $150,000 to $199,999
     "B19001_017E": "hh_inc_200k",  # Household Income $200,000 and more
 
+
+    # ---- Family Income
+    "B19101_002E": "fam_inc_10k",  # Family Income Less than $10,0000
+    "B19101_003E": "fam_inc_10k_15k",  # Family Income $10,000 to $14,999
+    "B19101_004E": "fam_inc_15k_20k",  # Family Income $15,000 to $19,999
+    "B19101_005E": "fam_inc_20k_25k",  # Family Income $20,000 to $24,999
+    "B19101_006E": "fam_inc_25k_30k",  # Family Income $25,000 to $29,999
+    "B19101_007E": "fam_inc_30k_35k",  # Family Income $30,000 to $34,999
+    "B19101_008E": "fam_inc_35k_40k",  # Family Income $35,000 to $39,999
+    "B19101_009E": "fam_inc_40k_45k",  # Family Income $40,000 to $44,999
+    "B19101_010E": "fam_inc_45k_50k",  # Family Income $45,000 to $49,999
+    "B19101_011E": "fam_inc_50k_60k",  # Family Income $50,000 to $59,999
+    "B19101_012E": "fam_inc_60k_75k",  # Family Income $60,000 to $74,999
+    "B19101_013E": "fam_inc_75k_100k",  # Family Income $75,000 to $99,999
+    "B19101_014E": "fam_inc_100k_125k",  # Family Income $100,000 to $124,999
+    "B19101_015E": "fam_inc_125k_150k",  # Family Income $120,000 to $149,999
+    "B19101_016E": "fam_inc_150k_200k",  # Family Income $150,000 to $199,999
+    "B19101_017E": "fam_inc_200k",  # Family Income $200,000 and more
     # --- Housing
 
     # ---- Vehicle Availability
@@ -215,7 +220,7 @@ acs_variables = {
     # ---- Social Summary
     "B11001_002E": "family_hh",  # family households
     "B11001_007E": "nonfamily_hh",  # nonfamily households
-    "B25010_001E": "avg_hh_size",  # average household size
+    "B25010_001E": "mean_hh_size",  # average household size
 
     # ---- Educational Attainment
     "B06009_002E": "less_hs",  # Less than a high school graduate
@@ -327,7 +332,9 @@ acs_subject_variables = {
     "S1901_C02_013E": "mean_family_inc",  # mean family income
 
     # ---- Social Summary
-    "S1101_C01_004E": "avg_family_size",  # average family size
+    "S1101_C01_003E": "total_fam",
+    "S1101_C01_004E": "mean_family_size",  # average family size
+
 
 
 }
@@ -339,6 +346,8 @@ for key, value in acs_subject_variables.items():
     all_acs_subject_variables[key[:-1] + 'M'] = value + '_moe'
 
 ACS_SUBJECT_VARIABLE_KEYS = [*all_acs_subject_variables]
+GROUPED_ACS_SUBJECT_VARIABLES = [ACS_SUBJECT_VARIABLE_KEYS[i:i + 49]
+                                 for i in range(0, len(ACS_SUBJECT_VARIABLE_KEYS), 49)]
 
 ACS_VARIABLES_COMBINED = all_acs_variables | all_acs_subject_variables
 ALL_VARIABLES_COMBINED_VALUES = list(ACS_VARIABLES_COMBINED.values())

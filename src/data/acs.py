@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from .consts import GROUPED_ACS_VARIABLES, PA_FIPS, PA_FIPS_FORMATTED, NJ_FIPS, NJ_FIPS_FORMATTED, STATE_FIPS, ACS_VARIABLES_COMBINED, ACS_SUBJECT_VARIABLE_KEYS
+from .consts import GROUPED_ACS_VARIABLES, GROUPED_ACS_SUBJECT_VARIABLES, PA_FIPS, PA_FIPS_FORMATTED, NJ_FIPS, NJ_FIPS_FORMATTED, STATE_FIPS, ACS_VARIABLES_COMBINED, ACS_SUBJECT_VARIABLE_KEYS
 import requests
 import os
 import logging
@@ -90,18 +90,25 @@ def build_dataframe(variable_group, first, geo, is_subject=False):
 def aggregate_dataframes(merge_key, geo):
     data = pd.DataFrame()
     first = True
+
     # Necessary for ACS 50 variable limit
-    for variable_group in GROUPED_ACS_VARIABLES:
-        df = build_dataframe(variable_group, first, geo)
+    def build_variable_group(variable_group, is_subject):
+        nonlocal data
+        nonlocal first
 
-        if (data.empty):
-            data = df
-            first = False
-        else:
-            data = data.merge(df, on=merge_key)
+        for variable_group in variable_group:
+            df = build_dataframe(variable_group, first, geo, is_subject)
 
-    subject_df = build_dataframe(ACS_SUBJECT_VARIABLE_KEYS, False, geo, True)
-    data = data.merge(subject_df, on=merge_key)
+            if (data.empty):
+                data = df
+                first = False
+            else:
+                data = data.merge(df, on=merge_key)
+        return data
+
+    build_variable_group(GROUPED_ACS_VARIABLES, is_subject=False)
+    build_variable_group(GROUPED_ACS_SUBJECT_VARIABLES, is_subject=True)
+
     return data
 
 
