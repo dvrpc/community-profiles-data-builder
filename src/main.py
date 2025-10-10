@@ -9,8 +9,8 @@ log = logging.getLogger(__name__)
 
 
 def exec():
-    # build_county_data()
-    # build_muni_data()
+    build_county_data()
+    build_muni_data()
     build_regional_data()
 
 
