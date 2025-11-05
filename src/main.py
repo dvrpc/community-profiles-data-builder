@@ -10,7 +10,6 @@ import requests
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
-
 load_dotenv()
 REVALIDATE_SECRET = os.getenv("REVALIDATE_SECRET")
 FRONTEND_URL = os.getenv("FRONTEND_URL")
@@ -26,8 +25,8 @@ async def save_data(df: pd.DataFrame, table):
     log.info(f'Writing dataframe to {table} table')
     engine = get_write_engine()
     try:
-        r = await df.to_sql(table, engine, if_exists='replace', index=False)
-        log.info(f"Succesfully wrote Dataframe to {table} table: {r} rows.")
+        await df.to_sql(table, engine, if_exists='replace', index=False)
+        log.info(f"Succesfully wrote Dataframe to {table} table")
     except Exception as e:
         log.error(f'Error writing Dataframe to {table} table: {e}')
 
