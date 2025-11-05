@@ -1,4 +1,5 @@
-from src.main import exec 
+from src.main import exec
+import asyncio
 
 if __name__ == '__main__':
-    exec()
+    asyncio.run(exec())
